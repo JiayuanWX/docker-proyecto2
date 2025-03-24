@@ -56,8 +56,8 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 1. Clonar el repositorio:
 
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd <NOMBRE_DEL_REPOSITORIO>
+   git clone git@github.com:JiayuanWX/docker-proyecto2.git
+   cd docker-proyecto2
    ```
 
 2. Iniciar el entorno con Docker Compose:
