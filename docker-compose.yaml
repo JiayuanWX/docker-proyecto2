@@ -1,49 +1,40 @@
 services:
 
     namenode:
+        image: apache/hadoop:3 
         container_name: namenode
         hostname: namenode
-        environment:
-            - HDFS_NAMENODE_USER=hdfs
-            - HDFS_DATANODE_USER=hdfs
-            - HDFS_SECONDARYNAMENODE_USER=hdfs
-            - CLUSTER_NAME=hadoop-cluster
-            - HDFS_NAMENODE_USER=root
-            - HADOOP_SSH_OPTS="-o StrictHostKeyChecking=no"
-        volumes:
-            - ./hadoop/namenode/data:/hadoop/dfs/name
         ports:
             - "9870:9870" # NameNode Web UI
-            - "9000:9000" # NameNode RPC
         networks:
             - mynetwork
+        env_file: "./config.txt"
+        command: hdfs namenode
 
     datanode:
-        container_name: datanode
+        image: apache/hadoop:3 
         hostname: datanode
-        environment:
-            - HDFS_NAMENODE_USER=hdfs
-            - HDFS_DATANODE_USER=hdfs
-            - HDFS_SECONDARYNAMENODE_USER=hdfs
-        volumes:
-            - ./hadoop/datanode/data:/hadoop/dfs/data
-        ports:
-            - "9864:9864" # DataNode Web UI
+        depends_on: 
+            - namenode
         networks:
             - mynetwork
+        env_file: "./config.txt"
+        command: hdfs datanode
+
 
     hive:
         image: apache/hive:3.1.3
-        container_name: hive
+        hostname: hive
         environment:
-            - HIVE_METASTORE_URI=thrift://postgres:9083
-            - HADOOP_HOME=/opt/hadoop
+            - SERVICE_NAME=hiveserver2
         ports:
             - "10000:10000"  # Hive server2 port
-            - "9083:9083"    # Hive Metastore port
+            - "10002:10002"    # Hive Metastore port
+        volumes:
+            - ./userdata:/userdata
         networks:
             - mynetwork
-
+        
 networks:
     mynetwork:
         driver: bridge
