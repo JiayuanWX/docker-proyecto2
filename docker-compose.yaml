@@ -1,0 +1,43 @@
+services:
+
+    namenode:
+        image: apache/hadoop:3 
+        container_name: namenode
+        hostname: namenode
+        ports:
+            - "9870:9870" # NameNode Web UI
+        networks:
+            - mynetwork
+        env_file: "./config.txt"
+        command: hdfs namenode
+
+    datanode:
+        image: apache/hadoop:3 
+        hostname: datanode
+        depends_on: 
+            - namenode
+        networks:
+            - mynetwork
+        env_file: "./config.txt"
+        command: hdfs datanode
+
+
+    hive:
+        image: apache/hive:3.1.3
+        hostname: hive
+        environment:
+            - SERVICE_NAME=hiveserver2
+        ports:
+            - "10000:10000"  # Hive server2 port
+            - "10002:10002"    # Hive Metastore port
+        volumes:
+            - ./userdata:/userdata
+        networks:
+            - mynetwork
+        
+networks:
+    mynetwork:
+        driver: bridge
+        name: mynetwork  # Definición de red personalizada
+
+
