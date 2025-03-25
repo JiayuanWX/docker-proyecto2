@@ -1,0 +1,88 @@
+services:
+    db:
+        container_name: mydb
+        image: mysql:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: root      
+            MYSQL_USER: admin99
+            MYSQL_PASSWORD: Admin9999
+            MYSQL_DATABASE: messages
+        healthcheck:  # sanity check de MySQL
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            interval: 10s
+            retries: 5
+        volumes:
+            - mysql_data:/var/lib/mysql  # Almacena datos de MySQL
+            - ./init-scripts:/docker-entrypoint-initdb.d  # Script de inicialización
+        ports:
+            - "32001:3306"  
+        networks:
+            - mynetwork
+
+    app:
+        build: ./       
+        deploy:
+            mode: replicated
+            replicas: 1  
+        environment:
+            - DB_HOST=db  # Variable de entorno para conexión a la base de datos (Azure/local)
+        depends_on:
+            - db
+        networks:
+            - mynetwork
+
+
+    prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        restart: unless-stopped
+        volumes:
+            - ./prometheus/config.yml:/etc/prometheus/prometheus.yml  # Configuración de Prometheus
+        depends_on:
+            - app
+        ports:
+            - "9090:9090"  # Interfaz de Prometheus
+        networks:
+            - mynetwork
+
+    mysql-exporter:
+        container_name: mysql-exporter
+        image: prom/mysqld-exporter
+        command: 
+            - --config.my-cnf=/cfg/.my.cnf
+            - --mysqld.address=db:3306  # Exporta métricas de MySQL
+        volumes:
+            - "./.my.cnf:/cfg/.my.cnf"
+        depends_on:
+            - db
+        ports:
+            - 9104:9104  # Expone métricas en el puerto 9104
+        networks:
+            - mynetwork
+
+    grafana:
+        container_name: grafana
+        image: grafana/grafana:latest
+        restart: unless-stopped
+        environment:
+            - GF_SECURITY_ADMIN_USER=admin
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+        volumes:
+            - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+            - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+            - grafana-data:/var/lib/grafana  # Persistencia de datos de Grafana
+        depends_on:
+            - prometheus
+        ports:
+            - 3000:3000  # Interfaz de Grafana
+        networks:
+            - mynetwork
+
+networks:
+    mynetwork:
+        driver: bridge
+        name: mynetwork  # Definición de red personalizada
+
+volumes:
+    mysql_data:  # Volumen para persistencia de MySQL
+    grafana-data:  # Volumen para persistencia de Grafana
