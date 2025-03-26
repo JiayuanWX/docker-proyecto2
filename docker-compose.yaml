@@ -42,6 +42,8 @@ services:
         networks:
             - mynetwork
         command: ["/bin/bash", "-c", "/docker-entrypoint-initdb.d/init-hive.sh"]
+    
+
 
         
 networks:
