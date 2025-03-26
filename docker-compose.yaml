@@ -36,6 +36,7 @@ services:
             - "10002:10002"    # Hive Metastore port
         volumes:
             - ./userdata:/userdata
+            - ./userschemas:/userschemas
             - ./init-hive.sql:/docker-entrypoint-initdb.d/init-hive.sql
             - ./init-hive.sh:/docker-entrypoint-initdb.d/init-hive.sh
         networks:
