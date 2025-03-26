@@ -1,6 +1,6 @@
 -- Crear la tabla externa summary en formato CSV en HDFS
 CREATE EXTERNAL TABLE IF NOT EXISTS summary (
-    country STRING,
+    pais STRING,
     numUsuarios BIGINT
 )
 ROW FORMAT DELIMITED

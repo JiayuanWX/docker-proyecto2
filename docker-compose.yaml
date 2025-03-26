@@ -44,11 +44,29 @@ services:
         command: ["/bin/bash", "-c", "/docker-entrypoint-initdb.d/init-hive.sh"]
     
 
-
+    db:
+        container_name: mydb
+        image: mysql:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: root      
+            MYSQL_USER: admin99
+            MYSQL_PASSWORD: Admin9999
+            MYSQL_DATABASE: proyecto2
+        healthcheck:  # sanity check de MySQL
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            interval: 10s
+            retries: 5
+        volumes:
+            - ./init-scripts:/docker-entrypoint-initdb.d  # Script de inicialización
+        ports:
+            - "32001:3306"  
+        networks:
+            - mynetwork
         
 networks:
     mynetwork:
         driver: bridge
         name: mynetwork  # Definición de red personalizada
+
 
 
