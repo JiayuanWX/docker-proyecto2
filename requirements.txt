@@ -1,1 +1,3 @@
+pyhive
 mysql-connector-python
+pandas

@@ -1,3 +1,5 @@
+beeline -u jdbc:hive2://hive:10000
+
 -- Crear la tabla externa summary en formato CSV en HDFS
 CREATE EXTERNAL TABLE IF NOT EXISTS summary (
     pais STRING,
