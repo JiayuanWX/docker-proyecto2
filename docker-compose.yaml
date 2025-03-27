@@ -62,22 +62,6 @@ services:
             - "32001:3306"  
         networks:
             - mynetwork
-
-    sqoop:
-        image: dvoros/sqoop:latest
-        container_name: sqoop
-        environment:
-            - SQOOP_METASTORE_SERVER=false
-        networks:
-            - mynetwork
-        depends_on:
-            - namenode
-            - db
-        volumes:
-            - ./userdata:/userdata
-            - ./data/usr/share/java/mysql-connector-java-9.2.0.jar:/usr/lib/sqoop/lib/mysql-connector-java-9.2.0.jar
-
-
         
 networks:
     mynetwork:

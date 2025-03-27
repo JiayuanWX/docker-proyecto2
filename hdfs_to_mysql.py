@@ -3,7 +3,7 @@ from pyhive import hive
 
 # Conectar a Hive
 try:
-    hive_conn = hive.Connection(host="hive", port=10000, database="default")
+    hive_conn = hive.Connection(host="172.20.0.4", port=10000, database="default")
     cursor_hive = hive_conn.cursor()
     cursor_hive.execute("SELECT * FROM summary")
 except Exception as e:
@@ -13,7 +13,7 @@ except Exception as e:
 config = {
   'user': 'admin',
   'password': 'admin',
-  'host': 'db',
+  'host': '172.20.0.2',
   'database': 'proyecto2'
 }
 connection = mysql.connector.connect(**config)
@@ -21,16 +21,11 @@ connection = mysql.connector.connect(**config)
 cursor = connection.cursor()
 
 for row in cursor_hive.fetchall():
-    cursor.execute("""
-        INSERT INTO summary (country, numUsuarios)
-        VALUES (%s, %s)
-    """, row)
+    cursor.execute("INSERT INTO summary (country, numUsuarios) VALUES (%s, %s)", row)
 
 # Confirmar cambios
 connection.commit()
 cursor_hive.close()
 cursor.close()
 hive_conn.close()
-conn.close()
-
-print("Datos exportados exitosamente a MySQL.")
+connection.close()
