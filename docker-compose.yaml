@@ -74,6 +74,15 @@ services:
             - 3000:3000  # Interfaz de Grafana
         networks:
             - mynetwork
+
+    superset:
+        container_name: superset
+        image: acpmialj/ipmd:ssuperset
+        ports:
+            - 8080:8088
+        networks:
+            - mynetwork
+
         
 networks:
     mynetwork:
