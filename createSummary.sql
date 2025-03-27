@@ -6,7 +6,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS summary (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 'user/hive/summary';  -- Ruta en HDFS
+LOCATION 'hdfs://namenode/tables';  -- Ruta en HDFS
 
 -- Insertar datos en summary
 INSERT OVERWRITE TABLE summary
@@ -15,3 +15,4 @@ FROM usuarios
 GROUP BY country
 ORDER BY numUsuarios DESC
 LIMIT 10;
+SHOW DATABASES;

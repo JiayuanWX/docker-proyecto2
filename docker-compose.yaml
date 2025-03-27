@@ -37,8 +37,6 @@ services:
         volumes:
             - ./userdata:/userdata
             - ./userschemas:/userschemas
-            - ./init-hive.sql:/docker-entrypoint-initdb.d/init-hive.sql
-            - ./init-hive.sh:/docker-entrypoint-initdb.d/init-hive.sh
         networks:
             - mynetwork
         command: ["/bin/bash", "-c", "/docker-entrypoint-initdb.d/init-hive.sh"]
@@ -49,8 +47,8 @@ services:
         image: mysql:latest
         environment:
             MYSQL_ROOT_PASSWORD: root      
-            MYSQL_USER: admin99
-            MYSQL_PASSWORD: Admin9999
+            MYSQL_USER: admin
+            MYSQL_PASSWORD: admin
             MYSQL_DATABASE: proyecto2
         healthcheck:  # sanity check de MySQL
             test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -62,6 +60,22 @@ services:
             - "32001:3306"  
         networks:
             - mynetwork
+
+    sqoop:
+        image: dvoros/sqoop:latest
+        container_name: sqoop
+        depends_on:
+            - db
+            - namenode
+        volumes:
+            - ./jdbc:/jdbc  # Conector JDBC 
+        ports:
+            - "12000:12000"  # Puerto del servidor Sqoop
+        networks:
+            - mynetwork
+        tty: true
+        stdin_open: true
+
         
 networks:
     mynetwork:

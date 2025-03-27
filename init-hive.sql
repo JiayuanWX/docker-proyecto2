@@ -14,6 +14,6 @@ CREATE EXTERNAL TABLE IF NOT EXISTS usuarios (
     comments STRING
 )
 STORED AS AVRO --Formato de almacenamiento
-LOCATION '/userdata' -- Ubicacion de los ficheros Avro en HDFS
-TBLPROPERTIES ('avro.schema.url'='/userschemas/userdata.avsc');
+LOCATION 'hdfs://namenode/userdata' -- Ubicacion de los ficheros Avro en HDFS
+TBLPROPERTIES ('avro.schema.url'='hdfs://namenode/schemas/userdata.avsc');
  
