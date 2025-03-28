@@ -17,8 +17,8 @@ CREATE EXTERNAL TABLE IF NOT EXISTS usuarios (
     comments STRING
 )
 STORED AS AVRO --Formato de almacenamiento
-LOCATION '/userdata' -- Ubicacion de los ficheros Avro en HDFS
-TBLPROPERTIES ('avro.schema.url'='/schemas/userdata.avsc');
+LOCATION 'hdfs://namenode/userdata' -- Ubicacion de los ficheros Avro en HDFS
+TBLPROPERTIES ('avro.schema.url'='hdfs://namenode/schemas/userdata.avsc');
  
 
 -- Crear la tabla externa summary en formato CSV en HDFS
@@ -29,7 +29,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS summary (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 'user/hive/summary';  -- Ruta en HDFS
+LOCATION 'hdfs://namenode/tables';  -- Ruta en HDFS
 
 -- Insertar datos en summary
 INSERT OVERWRITE TABLE summary
