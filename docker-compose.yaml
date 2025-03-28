@@ -69,6 +69,7 @@ services:
             - namenode
         volumes:
             - ./jdbc:/jdbc  # Conector JDBC 
+            - ./core-site.xml.template:/usr/local/hadoop/etc/hadoop/core-site.xml.template  # Sobrescribe core-site.xml.template
         ports:
             - "12000:12000"  # Puerto del servidor Sqoop
         networks:
