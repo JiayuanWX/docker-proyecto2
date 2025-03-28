@@ -1,0 +1,84 @@
+docker exec -it namenode bash
+hdfs dfs -chmod 777 / #dar permisos desde raiz a hive
+
+docker exec -it hive bash
+hdfs dfs -put /userdata hdfs://namenode/
+hdfs dfs -put /schemas hdfs://namenode/
+
+beeline -u jdbc:hive2://hive:10000
+
+
+CREATE EXTERNAL TABLE IF NOT EXISTS usuarios (
+    registration_dttm STRING,
+    id BIGINT,
+    first_name STRING,
+    last_name STRING,
+    email STRING,
+    gender STRING,
+    ip_address STRING,
+    cc BIGINT,
+    country STRING,
+    birthdate STRING,
+    salary DOUBLE,
+    title STRING,
+    comments STRING
+)
+STORED AS AVRO --Formato de almacenamiento
+LOCATION 'hdfs://namenode/userdata' -- Ubicacion de los ficheros Avro en HDFS
+TBLPROPERTIES ('avro.schema.url'='hdfs://namenode/schemas/userdata.avsc');
+
+ 
+-- Crear la tabla externa summary en formato CSV en HDFS
+CREATE EXTERNAL TABLE IF NOT EXISTS summary (
+    pais STRING,
+    numUsuarios BIGINT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode/tables';  -- Ruta en HDFS
+
+-- Insertar datos en summary
+INSERT OVERWRITE TABLE summary
+SELECT country, COUNT(*) as numUsuarios
+FROM usuarios
+GROUP BY country
+ORDER BY numUsuarios DESC
+LIMIT 10;
+
+
+
+docker exec -it mydb bash
+mysql -u root -proot
+use proyecto2;
+show tables;
+
+docker exec -it sqoop bash
+#comprobar conectibilidad a mysql
+sqoop eval \
+  --connect jdbc:mysql://db:3306/proyecto2 \
+  --username root \
+  --password root \
+  --query "SELECT * from summary;"
+
+
+echo $HADOOP_CONF_DIR
+vi /usr/local/hadoop/etc/hadoop/core-site.xml
+#pegar
+  <configuration>
+      <property>
+          <name>fs.defaultFS</name>
+          <value>hdfs://namenode:8020</value>
+      </property>
+  </configuration>
+
+
+#exportar datos de hdfs a mysql
+
+sqoop export \
+    --connect jdbc:mysql://mydb:3306/proyecto2 \
+    --username admin \
+    --password admin \
+    --table summary \
+    --export-dir /tables \
+    --input-fields-terminated-by ','

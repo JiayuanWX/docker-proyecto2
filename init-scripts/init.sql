@@ -11,7 +11,7 @@ USE proyecto2;
 
 -- Crear la tabla 'summary' si no existe
 CREATE TABLE IF NOT EXISTS summary (
-    pais VARCHAR(255),
+    country VARCHAR(255),
     numUsuarios BIGINT
 );
 
