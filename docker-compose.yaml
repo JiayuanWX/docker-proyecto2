@@ -35,12 +35,10 @@ services:
             - "10000:10000"  # Hive server2 port
             - "10002:10002"    # Hive Metastore port
         volumes:
-            - ./userdata:/userdata
-            - ./schemas:/schemas
+            - ./data/userdata:/userdata
+            - ./data/schema:/schema
         networks:
-            - mynetwork
-        command: ["/bin/bash", "-c", "/docker-entrypoint-initdb.d/init-hive.sh"]
-    
+            - mynetwork    
 
     db:
         container_name: mydb
@@ -55,7 +53,7 @@ services:
             interval: 10s
             retries: 5
         volumes:
-            - ./init-scripts:/docker-entrypoint-initdb.d  # Script de inicialización
+            - ./mysqlFiles:/docker-entrypoint-initdb.d  # Script de inicialización
         ports:
             - "32001:3306"  
         networks:
@@ -68,10 +66,8 @@ services:
             - db
             - namenode
         volumes:
-            - ./jdbc:/jdbc  # Conector JDBC 
-            - ./core-site.xml.template:/usr/local/hadoop/etc/hadoop/core-site.xml.template  # Sobrescribe core-site.xml.template
-        ports:
-            - "12000:12000"  # Puerto del servidor Sqoop
+            - ./sqoopFiles/jdbc:/jdbc  # Conector JDBC 
+            - ./sqoopFiles/core-site.xml.template:/usr/local/hadoop/etc/hadoop/core-site.xml.template  # Sobrescribe core-site.xml.template
         networks:
             - mynetwork
         tty: true
