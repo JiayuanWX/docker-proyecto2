@@ -71,21 +71,53 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
    ```bash
    docker ps
    ```
+4. Inicializar HDFS y configurar permisos
 
-4. Cargar archivos AVRO en HDFS:
+   ```bash
+   docker exec -it namenode bash
+   hdfs dfs -mkdir -p /user/hive/  # -p para crear directorios si no existen
+   hdfs dfs -chown -R hive /user/hive
+   ```
+5. Cargar archivos AVRO y esquema en HDFS
+
+   ```bash
+   docker exec -it hive bash   
+   hdfs dfs -put /userdata hdfs://namenode/user/hive/
+   hdfs dfs -put /schema hdfs://namenode/user/hive/
+   ```
+
+6. Crear tablas en Hive y generar el resumen:
 
    ```bash
    docker exec -it hive-server beeline -u jdbc:hive2://localhost:10000 -n hive
-   dfs -mkdir -p /user/hive/warehouse/usuarios;
-   dfs -put /datos/*.avro /user/hive/warehouse/usuarios/;
    ```
-
-5. Crear tablas en Hive y generar el resumen:
 
    ```sql
-   CREATE EXTERNAL TABLE usuarios (...);
-   CREATE TABLE summary AS SELECT country, COUNT(*) FROM usuarios GROUP BY country ORDER BY COUNT(*) DESC LIMIT 10;
+   CREATE EXTERNAL TABLE IF NOT EXISTS usuarios
+   STORED AS AVRO
+   LOCATION 'hdfs://namenode/user/hive/userdata'
+   TBLPROPERTIES ('avro.schema.url'='hdfs://namenode/user/hive/schema/userdata.avsc');
    ```
+   ```sql
+   -- Crear la tabla externa summary en formato CSV en HDFS
+CREATE EXTERNAL TABLE IF NOT EXISTS summary (
+    pais STRING,
+    numUsuarios BIGINT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode/user/hive/tables';  -- Ruta en HDFS
+
+-- Insertar datos en summary
+INSERT OVERWRITE TABLE summary
+SELECT country, COUNT(*) as numUsuarios
+FROM usuarios
+GROUP BY country
+ORDER BY numUsuarios DESC
+LIMIT 10;
+``` sql
+   
 
 6. Ejecutar el script de transferencia a MySQL:
 
