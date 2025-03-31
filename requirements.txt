@@ -1,1 +1,4 @@
 mysql-connector-python
+pyhive
+thrift
+thrift_sasl

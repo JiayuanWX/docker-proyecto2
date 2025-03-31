@@ -6,10 +6,10 @@ services:
         hostname: namenode
         ports:
             - "9870:9870" # NameNode Web UI
-        networks:
-            - mynetwork
         env_file: "./config.txt"
         command: hdfs namenode
+        networks:
+            - mynetwork
 
     datanode:
         image: apache/hadoop:3 
@@ -17,10 +17,10 @@ services:
         container_name: datanode
         depends_on: 
             - namenode
-        networks:
-            - mynetwork
         env_file: "./config.txt"
         command: hdfs datanode
+        networks:
+            - mynetwork
 
 
     hive:
@@ -72,7 +72,25 @@ services:
             - mynetwork
         tty: true
         stdin_open: true
+    grafana:
+        container_name: grafana
+        image: grafana/grafana:latest
+        restart: unless-stopped
+        environment:
+            - GF_SECURITY_ADMIN_USER=admin
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+        ports:
+            - 3000:3000  # Interfaz de Grafana
+        networks:
+            - mynetwork
 
+    superset:
+        container_name: superset
+        image: acpmialj/ipmd:ssuperset
+        ports:
+            - 8080:8088
+        networks:
+            - mynetwork
         
 networks:
     mynetwork:
