@@ -141,14 +141,46 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 
 ```
 /
-├── docker-compose.yml  # Definición de los servicios
-├── scripts/
-│   ├── transfer_to_mysql.py  # Script para mover datos de HDFS a MySQL
-├── data/  # Archivos AVRO de entrada
-├── config/
-│   ├── hive-site.xml  # Configuración de Hive
-│   ├── mysql-init.sql  # Script de inicialización de MySQL
-└── README.md  # Este archivo
+├── Dockerfile
+├── README.md
+├── config
+│   └── hive
+├── config.txt
+├── data
+│   ├── schema
+│   │   └── userdata.avsc
+│   └── userdata
+│       ├── userdata1.avro
+│       ├── userdata2.avro
+│       ├── userdata3.avro
+│       ├── userdata4.avro
+│       └── userdata5.avro
+├── docker-compose.yaml
+├── grafana
+├── hadoop
+│   ├── datanode
+│   │   └── data
+│   └── namenode
+│       └── data
+│           ├── current
+│           │   ├── VERSION
+│           │   ├── edits_0000000000000000001-0000000000000000001
+│           │   ├── edits_inprogress_0000000000000000002
+│           │   ├── fsimage_0000000000000000000
+│           │   ├── fsimage_0000000000000000000.md5
+│           │   └── seen_txid
+│           └── in_use.lock
+├── hdfs_to_mysql.py
+├── init-hive.sh
+├── mysqlFiles
+│   └── init.sql
+├── pasos.txt
+├── pasos2.txt
+├── requirements.txt
+└── sqoopFiles
+    ├── core-site.xml.template
+    └── jdbc
+        └── mysql-connector-j-9.2.0.jar
 ```
 
 ## Autores
