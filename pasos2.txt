@@ -34,6 +34,9 @@ GROUP BY country
 ORDER BY numUsuarios DESC
 LIMIT 10;
 
+#Exportar datos de HDFS a MySQL mediante el script de python
+docker build -t export_data .
+docker run --network=mynetwork --rm export_data
 
 #COMPROBAR correcta inicialización de mysql
 docker exec -it mydb bash
