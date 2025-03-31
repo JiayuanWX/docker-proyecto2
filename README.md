@@ -100,32 +100,42 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
    ```
    ```sql
    -- Crear la tabla externa summary en formato CSV en HDFS
-CREATE EXTERNAL TABLE IF NOT EXISTS summary (
-    pais STRING,
-    numUsuarios BIGINT
-)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-STORED AS TEXTFILE
-LOCATION 'hdfs://namenode/user/hive/tables';  -- Ruta en HDFS
+   CREATE EXTERNAL TABLE IF NOT EXISTS summary (
+   pais STRING,
+   numUsuarios BIGINT
+   )
+   ROW FORMAT DELIMITED
+   FIELDS TERMINATED BY ','
+   STORED AS TEXTFILE
+   LOCATION 'hdfs://namenode/user/hive/tables';  -- Ruta en HDFS
 
--- Insertar datos en summary
-INSERT OVERWRITE TABLE summary
-SELECT country, COUNT(*) as numUsuarios
-FROM usuarios
-GROUP BY country
-ORDER BY numUsuarios DESC
-LIMIT 10;
-``` sql
+   -- Insertar datos en summary
+   INSERT OVERWRITE TABLE summary
+   SELECT country, COUNT(*) as numUsuarios
+   FROM usuarios
+   GROUP BY country
+   ORDER BY numUsuarios DESC
+   LIMIT 10;
+   ```
    
-
-6. Ejecutar el script de transferencia a MySQL:
+7. Ejecutar el script de transferencia a MySQL:
 
    ```bash
    python transfer_to_mysql.py
    ```
 
-7. Configurar la fuente de datos en Grafana y visualizar los resultados.
+8. Comprobar la correcta incialización de MySQL.
+
+   ```bash
+   docker exec -it mydb bash
+   mysql -u root -proot
+   ```
+   ```sql
+   use proyecto2;
+   show tables;
+   ```
+   
+9. Configurar la fuente de datos en Grafana y visualizar los resultados
 
 ## Estructura del Proyecto
 
