@@ -6,10 +6,10 @@ services:
         hostname: namenode
         ports:
             - "9870:9870" # NameNode Web UI
-        networks:
-            - mynetwork
         env_file: "./config.txt"
         command: hdfs namenode
+        networks:
+            - mynetwork
 
     datanode:
         image: apache/hadoop:3 
@@ -17,10 +17,10 @@ services:
         container_name: datanode
         depends_on: 
             - namenode
-        networks:
-            - mynetwork
         env_file: "./config.txt"
         command: hdfs datanode
+        networks:
+            - mynetwork
 
 
     hive:
@@ -35,14 +35,10 @@ services:
             - "10000:10000"  # Hive server2 port
             - "10002:10002"    # Hive Metastore port
         volumes:
-            - ./userdata:/userdata
-            - ./schemas:/schemas
-            - ./init-hive.sql:/docker-entrypoint-initdb.d/init-hive.sql
-            - ./init-hive.sh:/docker-entrypoint-initdb.d/init-hive.sh
+            - ./data/userdata:/userdata
+            - ./data/schema:/schema
         networks:
-            - mynetwork
-        command: ["/bin/bash", "-c", "/docker-entrypoint-initdb.d/init-hive.sh"]
-    
+            - mynetwork    
 
     db:
         container_name: mydb
@@ -57,12 +53,25 @@ services:
             interval: 10s
             retries: 5
         volumes:
-            - ./init-scripts:/docker-entrypoint-initdb.d  # Script de inicialización
+            - ./mysqlFiles:/docker-entrypoint-initdb.d  # Script de inicialización
         ports:
             - "32001:3306"  
         networks:
             - mynetwork
 
+    sqoop:
+        image: dvoros/sqoop:latest
+        container_name: sqoop
+        depends_on:
+            - db
+            - namenode
+        volumes:
+            - ./sqoopFiles/jdbc:/jdbc  # Conector JDBC 
+            - ./sqoopFiles/core-site.xml.template:/usr/local/hadoop/etc/hadoop/core-site.xml.template  # Sobrescribe core-site.xml.template
+        networks:
+            - mynetwork
+        tty: true
+        stdin_open: true
     grafana:
         container_name: grafana
         image: grafana/grafana:latest
@@ -82,7 +91,6 @@ services:
             - 8080:8088
         networks:
             - mynetwork
-
         
 networks:
     mynetwork:
