@@ -1,0 +1,12 @@
+apiVersion: 1
+
+datasources:
+  - name: MySQL
+    type: mysql
+    access: proxy
+    url: db:3306  # Nombre del servicio de MySQL dentro de la red Docker y puerto
+    database: proyecto2  # Nombre de la base de datos en MySQL
+    user: admin  # Usuario de MySQL
+    secureJsonData:  
+      password: admin  # Contraseña del usuario de MySQL
+    isDefault: true  # Configurar como fuente de datos por defecto
