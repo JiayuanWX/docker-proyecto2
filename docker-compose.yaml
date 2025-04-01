@@ -79,8 +79,13 @@ services:
         environment:
             - GF_SECURITY_ADMIN_USER=admin
             - GF_SECURITY_ADMIN_PASSWORD=admin
+        volumes:
+            - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+            - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
         ports:
             - 3000:3000  # Interfaz de Grafana
+        depends_on:
+            - db
         networks:
             - mynetwork
 

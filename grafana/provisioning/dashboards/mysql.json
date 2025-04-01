@@ -1,0 +1,31 @@
+{
+  "id": null,
+  "uid": "mysql-summary-dashboard",
+  "title": "MySQL Summary Dashboard",
+  "schemaVersion": 36,
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "type": "piechart",
+      "title": "Usuarios por País",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "aehiqa8ir7sowf"
+          },
+          "rawSql": "SELECT country, numUsuarios FROM proyecto2.summary LIMIT 50",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "values": true, "calcs": ["lastNotNull"], "fields": "" },
+        "pieType": "pie",
+        "tooltip": { "mode": "single", "sort": "none", "hideZeros": false },
+        "legend": { "showLegend": true, "displayMode": "list", "placement": "bottom" }
+      }
+    }
+  ]
+}
