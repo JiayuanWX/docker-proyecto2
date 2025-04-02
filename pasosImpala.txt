@@ -1,20 +1,19 @@
 docker exec -it namenode bash
-hdfs dfs -mkdir -p /user/hive/ #-p para crear directorios si no existen
-hdfs dfs -chown -R hive /user/hive
+hdfs dfs -mkdir -p /user/impala/ #-p para crear directorios si no existen
+hdfs dfs -chown impala /user/impala
 
 
-docker exec -it hive bash
-hdfs dfs -put /userdata hdfs://namenode/user/hive/
-hdfs dfs -put /schema hdfs://namenode/user/hive/
+docker exec -it impala bash
+hdfs dfs -put /userdata hdfs://namenode/user/impala/
+hdfs dfs -put /schema hdfs://namenode/user/impala/
 
-beeline -u jdbc:hive2://hive:10000
+impala-shell
 
 CREATE EXTERNAL TABLE IF NOT EXISTS usuarios
 STORED AS AVRO
-LOCATION 'hdfs://namenode/user/hive/userdata'
-TBLPROPERTIES ('avro.schema.url'='hdfs://namenode/user/hive/schema/userdata.avsc');
+LOCATION 'hdfs://namenode/user/impala/userdata'
+TBLPROPERTIES ('avro.schema.url'='hdfs://namenode/user/impala/schema/userdata.avsc');
 
- 
 -- Crear la tabla externa summary en formato CSV en HDFS
 CREATE EXTERNAL TABLE IF NOT EXISTS summary (
     pais STRING,
@@ -23,7 +22,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS summary (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 'hdfs://namenode/user/hive/tables';  -- Ruta en HDFS
+LOCATION 'hdfs://namenode/user/impala/tables';  -- Ruta en HDFS
 
 -- Insertar datos en summary
 INSERT OVERWRITE TABLE summary
@@ -33,36 +32,26 @@ GROUP BY country
 ORDER BY numUsuarios DESC
 LIMIT 10;
 
-#Exportar datos de HDFS a MySQL mediante el script de python
-docker build -t export_data .
-docker run --network=mynetwork --rm export_data python hdfs_to_mysql.py 
-
-#COMPROBAR correcta inicialización de mysql
-docker exec -it mydb bash
-mysql -u root -proot
-use proyecto2;
-show tables;
-
 #VOLCADO A MYSQL CON SQOOP
 docker exec -it sqoop bash
-#COMPROBAR conectividad a mysql
+#COMPROBAR conectibilidad a mysql
 sqoop eval \
   --connect jdbc:mysql://db:3306/proyecto2 \
   --username admin \
   --password admin \
   --query "SELECT * from summary;"
 
-#EXPORTAR datos de hdfs a mysql
+  #EXPORTAR datos de hdfs a mysql
 export HADOOP_USER_NAME=hadoop #No es una variable interna de Hadoop, sino una forma de simular otro usuario sin autenticación real, lo cual no es seguro en producción.
 sqoop export \
     --connect jdbc:mysql://mydb:3306/proyecto2 \
     --username admin \
     --password admin \
     --table summary \
-    --export-dir /user/hive/tables \
+    --export-dir /user/impala/tables \
     --input-fields-terminated-by ','
 
 #COMPROBAR correcta exportacion
-docker exec -it hive bash
-hdfs dfs -ls hdfs://namenode/user/hive/tables
-hdfs dfs -cat hdfs://namenode/user/hive/tables/00000_0
+docker exec -it impala bash
+hdfs dfs -ls hdfs://namenode/user/impala/tables
+hdfs dfs -cat hdfs://namenode/user/impala/tables/32440a474cfb3637-2bfa547200000002_1004680984_data.0.txt
