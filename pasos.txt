@@ -3,12 +3,9 @@ hdfs dfs -mkdir -p /user/hive/ #-p para crear directorios si no existen
 hdfs dfs -chown -R hive /user/hive
 exit
 
-
-
 docker exec -it hive bash
 hdfs dfs -put /userdata hdfs://namenode/user/hive/
 hdfs dfs -put /schema hdfs://namenode/user/hive/
-
 
 beeline -u jdbc:hive2://hive:10000
 
@@ -47,7 +44,7 @@ use proyecto2;
 show tables;
 
 docker exec -it sqoop bash
-#COMPROBAR conectibilidad a mysql
+#COMPROBAR conectividad a mysql
 sqoop eval \
   --connect jdbc:mysql://db:3306/proyecto2 \
   --username admin \
