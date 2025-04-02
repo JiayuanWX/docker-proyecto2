@@ -1,12 +1,11 @@
 docker exec -it namenode bash
 hdfs dfs -mkdir -p /user/hive/ #-p para crear directorios si no existen
-hdfs dfs -chown hive /user/hive
+hdfs dfs -chown -R hive /user/hive
 
 
 docker exec -it hive bash
 hdfs dfs -put /userdata hdfs://namenode/user/hive/
 hdfs dfs -put /schema hdfs://namenode/user/hive/
-
 
 beeline -u jdbc:hive2://hive:10000
 
@@ -36,7 +35,7 @@ LIMIT 10;
 
 #Exportar datos de HDFS a MySQL mediante el script de python
 docker build -t export_data .
-docker run --network=mynetwork --rm export_data
+docker run --network=mynetwork --rm export_data python hdfs_to_mysql.py 
 
 #COMPROBAR correcta inicialización de mysql
 docker exec -it mydb bash
@@ -46,7 +45,7 @@ show tables;
 
 #VOLCADO A MYSQL CON SQOOP
 docker exec -it sqoop bash
-#COMPROBAR conectibilidad a mysql
+#COMPROBAR conectividad a mysql
 sqoop eval \
   --connect jdbc:mysql://db:3306/proyecto2 \
   --username admin \

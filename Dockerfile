@@ -7,6 +7,3 @@ COPY hdfs_to_mysql.py .
 
 # Instalamos las dependencias
 RUN pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt
-
-# Ejecutamos el script automáticamente al iniciar el contenedor
-CMD ["python", "hdfs_to_mysql.py"]
