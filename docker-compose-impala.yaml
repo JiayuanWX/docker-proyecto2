@@ -85,10 +85,6 @@ services:
         image: apache/kudu:impala-latest
         ports:
             - 21000:21000 #puerto para recibir consultas (protocolo propio) impala shell
-            #- 21050:21050 #puerto para recibir consultas (protocolo hive2) -- es el que se usa para conectar a Superset
-            #- 25000:25000 #WebUI impalad
-            #- 25010:25010 #WebUI statestore
-            #- 25020:25020 #WebUI catalogd
         mem_limit: 4096m
         environment:
             - JAVA_HOME=/usr

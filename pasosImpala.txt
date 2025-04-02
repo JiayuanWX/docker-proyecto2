@@ -54,4 +54,4 @@ sqoop export \
 #COMPROBAR correcta exportacion
 docker exec -it impala bash
 hdfs dfs -ls hdfs://namenode/user/impala/tables
-hdfs dfs -cat hdfs://namenode/user/impala/tables/32440a474cfb3637-2bfa547200000002_1004680984_data.0.txt
+hdfs dfs -cat hdfs://namenode/user/impala/tables/nombreArchivo.txt
