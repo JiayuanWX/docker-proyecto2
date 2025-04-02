@@ -20,24 +20,7 @@ services:
         env_file: "./config.txt"
         command: hdfs datanode
         networks:
-            - mynetwork
-
-    hive:
-        image: apache/hive:3.1.3
-        hostname: hive
-        container_name: hive
-        depends_on:
-            - namenode 
-        environment:
-            - SERVICE_NAME=hiveserver2
-        ports:
-            - "10000:10000"  # Hive server2 port
-            - "10002:10002"    # Hive Metastore port
-        volumes:
-            - ./data/userdata:/userdata
-            - ./data/schema:/schema
-        networks:
-            - mynetwork    
+            - mynetwork  
 
     db:
         container_name: mydb
@@ -88,9 +71,28 @@ services:
         container_name: superset
         image: acpmialj/ipmd:ssuperset
         ports:
-            - 8080:8088
+            - 8080:8088 # web UI de superset
         networks:
             - mynetwork
+
+    impala:
+        container_name: impala
+        image: apache/kudu:impala-latest
+        ports:
+            - 21000:21000 #puerto para recibir consultas (protocolo propio) impala shell
+            #- 21050:21050 #puerto para recibir consultas (protocolo hive2) -- es el que se usa para conectar a Superset
+            #- 25000:25000 #WebUI impalad
+            #- 25010:25010 #WebUI statestore
+            #- 25020:25020 #WebUI catalogd
+        mem_limit: 4096m
+        environment:
+            - JAVA_HOME=/usr
+        command: ["impala"]
+        volumes:
+            - ./data/userdata:/userdata
+            - ./data/schema:/schema
+        networks:
+            - mynetwork  
         
 networks:
     mynetwork:
