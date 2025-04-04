@@ -121,7 +121,7 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 7. Ejecutar el script de transferencia a MySQL:
 
    ```bash
-   python transfer_to_mysql.py
+   docker run --network=mynetwork --rm export_data 
    ```
 
 8. Comprobar la correcta incialización de MySQL.
@@ -133,6 +133,7 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
    ```sql
    use proyecto2;
    show tables;
+   SELECT * FROM summary;
    ```
    
 9. Configurar la fuente de datos en Grafana y visualizar los resultados
