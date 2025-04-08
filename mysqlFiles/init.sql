@@ -4,8 +4,8 @@ CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
 -- Crear la base de datos 'proyecto2' si no existe
 CREATE DATABASE IF NOT EXISTS proyecto2;
 
--- Otorgar todos los privilegios sobre la base de datos 'summary' al usuario 'admin'
-GRANT ALL PRIVILEGES ON messages.* TO 'admin'@'localhost';
+-- Otorgar todos los privilegios sobre la base de datos 'proyecto2' al usuario 'admin'
+GRANT ALL PRIVILEGES ON proyecto2.* TO 'admin'@'localhost';
 
 USE proyecto2;
 
