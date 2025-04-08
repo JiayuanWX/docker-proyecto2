@@ -121,6 +121,7 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 7. Ejecutar el script de transferencia a MySQL:
 
    ```bash
+   docker build -t export_data .
    docker run --network=mynetwork --rm export_data 
    ```
 
