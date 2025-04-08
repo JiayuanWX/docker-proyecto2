@@ -6,7 +6,6 @@ try:
     hive_conn = hive.Connection(host="hive", port=10000, database="default")
     cursor_hive = hive_conn.cursor()
     cursor_hive.execute("SELECT * FROM summary")
-    print("0")
 except Exception as e:
     print(f" Error conectando a Hive: {e}")
     exit(1)
