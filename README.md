@@ -141,7 +141,7 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 ## Estructura del Proyecto
 
 ```
-/
+.
 ├── Dockerfile
 ├── README.md
 ├── config.txt
@@ -154,6 +154,7 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 │       ├── userdata3.avro
 │       ├── userdata4.avro
 │       └── userdata5.avro
+├── docker-compose-impala.yaml
 ├── docker-compose.yaml
 ├── grafana
 │   └── provisioning
@@ -178,7 +179,6 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 ├── hdfs_to_mysql.py
 ├── mysqlFiles
 │   └── init.sql
-├── pasos.txt
 ├── requirements.txt
 └── sqoopFiles
     ├── core-site.xml.template
