@@ -144,8 +144,6 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 /
 ├── Dockerfile
 ├── README.md
-├── config
-│   └── hive
 ├── config.txt
 ├── data
 │   ├── schema
@@ -158,6 +156,12 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 │       └── userdata5.avro
 ├── docker-compose.yaml
 ├── grafana
+│   └── provisioning
+│       ├── dashboards
+│       │   ├── dashboard.yml
+│       │   └── mysql.json
+│       └── datasources
+│           └── datasource.yml
 ├── hadoop
 │   ├── datanode
 │   │   └── data
@@ -172,11 +176,9 @@ El entorno se despliega utilizando Docker Compose e incluye los siguientes servi
 │           │   └── seen_txid
 │           └── in_use.lock
 ├── hdfs_to_mysql.py
-├── init-hive.sh
 ├── mysqlFiles
 │   └── init.sql
 ├── pasos.txt
-├── pasos2.txt
 ├── requirements.txt
 └── sqoopFiles
     ├── core-site.xml.template
