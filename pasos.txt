@@ -43,16 +43,8 @@ mysql -u root -proot
 use proyecto2;
 show tables;
 
-#VOLCADO A MYSQL CON SQOOP
+#VOLCADO A MYSQL DESDE HDFS CON SQOOP
 docker exec -it sqoop bash
-#COMPROBAR conectividad a mysql
-sqoop eval \
-  --connect jdbc:mysql://db:3306/proyecto2 \
-  --username admin \
-  --password admin \
-  --query "SELECT * from summary;"
-
-#EXPORTAR datos de hdfs a mysql
 export HADOOP_USER_NAME=hadoop #No es una variable interna de Hadoop, sino una forma de simular otro usuario sin autenticación real, lo cual no es seguro en producción.
 sqoop export \
     --connect jdbc:mysql://mydb:3306/proyecto2 \
@@ -65,4 +57,4 @@ sqoop export \
 #COMPROBAR correcta exportacion
 docker exec -it hive bash
 hdfs dfs -ls hdfs://namenode/user/hive/tables
-hdfs dfs -cat hdfs://namenode/user/hive/tables/00000_0
+hdfs dfs -cat hdfs://namenode/user/hive/tables/000000_0
